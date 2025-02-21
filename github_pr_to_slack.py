@@ -5,7 +5,6 @@ from dotenv import load_dotenv, find_dotenv
 
 # .env 파일 로드
 env_path = find_dotenv()
-print(f"🔍 .env 파일 경로: {env_path}")  # 경로 출력해서 확인
 load_dotenv(env_path)
 
 # GitHub 설정
@@ -24,12 +23,12 @@ def get_prs_with_labels(owner, repo):
                "Accept": "application/vnd.github.v3+json"}
     
     response = requests.get(url, headers=headers)
-    print(f"🔍 응답 코드: {response.status_code}")
-    print(f"🔍 응답 내용: {response.text}")
 
     if response.status_code != 200:
         print(f"❌ Error: GitHub API 요청 실패 ({response.status_code})")
-        return []
+        print(f"🔍 응답 코드: {response.status_code}")
+        print(f"🔍 응답 내용: {response.text}")
+        return {"status_code": 200, "message": "GitHub API 요청 성공", "prs": []}
 
     prs = response.json()
     filtered_prs = [
@@ -37,7 +36,7 @@ def get_prs_with_labels(owner, repo):
         if any(label["name"] in LABELS for label in pr.get("labels", []))
     ]
     
-    return filtered_prs
+    return {"status_code": 200, "message": "GitHub API 요청 성공", "prs": filtered_prs}
 
 # 라벨이 PR에 포함된 경우 표시
 def format_pr_labels(pr):
@@ -62,10 +61,12 @@ def get_all_prs():
     all_prs = []
     
     for repo in REPOSITORIES:
-        prs = get_prs_with_labels(repo["owner"], repo["name"])
-        if prs:
-            message = format_slack_message(prs)
+        response = get_prs_with_labels(repo["owner"], repo["name"])
+        if response["status_code"] == 200:
+            message = format_slack_message(response["prs"])
             all_prs.append(message)
+        else:
+            message = "📌 PR Reminder!\nPR 로드 실패"
     
     if all_prs:
         return "\n".join(all_prs)
@@ -78,11 +79,9 @@ def send_to_slack(message):
     
     response = requests.post(SLACK_WEBHOOK_URL, data=json.dumps(payload), headers=headers)
     if response.status_code != 200:
-        print(f"Error: Slack 메시지 전송 실패 ({response.status_code})")
+        print(f"❌ Error: Slack 메시지 전송 실패 ({response.status_code})")
 
 def main():
-    print(f"🔍 로드된 GITHUB_TOKEN (첫 5자리): {GITHUB_TOKEN[:5]}...")
-    print(f"🔍 로드된 SLACK_WEBHOOK_URL (첫 10자리): {SLACK_WEBHOOK_URL[:10]}...")
     message = get_all_prs()
     send_to_slack(message)
 
