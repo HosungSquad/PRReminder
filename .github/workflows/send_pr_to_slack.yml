@@ -1,0 +1,43 @@
+name: Send PRs with Specific Labels to Slack
+
+on:
+  schedule:
+    - cron: "0 1 * * 1-5"
+  workflow_dispatch:  
+
+jobs:
+  check_holiday:
+    runs-on: ubuntu-latest
+    outputs:
+      is_holiday: ${{ steps.check.outputs.is_holiday }}
+    steps:
+      - name: Check if today is a public holiday
+        id: check
+        run: |
+          curl -s "https://calendar.naver.com/publicHoliday/ko.ics" -o holidays.ics
+          TODAY=$(date +%Y%m%d)
+          if grep -q "DTSTART;VALUE=DATE:$TODAY" holidays.ics; then
+            echo "is_holiday=true" >> $GITHUB_ENV
+          else
+            echo "is_holiday=false" >> $GITHUB_ENV
+          fi
+          
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run PR notification script
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: python github_pr_to_slack.py
