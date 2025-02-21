@@ -6,9 +6,6 @@ import json
 GITHUB_TOKEN = os.getenv("PAT_TOKEN")
 SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL") 
 
-print(f"GITHUB_TOKEN: {os.getenv('GITHUB_TOKEN', 'NOT SET')}")
-print(f"SLACK_WEBHOOK_URL: {os.getenv('SLACK_WEBHOOK_URL', 'NOT SET')}")
-
 LABELS = ["OverDue", "D-0", "D-1", "D-2", "D-3"]
 REPOSITORIES = [
     {"owner": "jshan0120", "name": "CleCommonSystems"},
@@ -41,7 +38,7 @@ def format_pr_labels(pr):
 
 def format_slack_message(prs):
     if not prs:
-        return "📌 PR Reminder!\n PR 로드 실패."
+        return "📌 PR Reminder!\nPR 로드 실패"
 
     message = "📌 PR Reminder!\nReview 대기 중인 PR 목록:\n"
     for pr in prs:
@@ -74,6 +71,8 @@ def send_to_slack(message):
         print(f"Error: Slack 메시지 전송 실패 ({response.status_code})")
 
 def main():
+    print(f"GITHUB_TOKEN: {os.getenv('GITHUB_TOKEN', 'NOT SET')}")
+    print(f"SLACK_WEBHOOK_URL: {os.getenv('SLACK_WEBHOOK_URL', 'NOT SET')}")
     message = get_all_prs()
     send_to_slack(message)
 
