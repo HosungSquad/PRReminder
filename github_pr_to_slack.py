@@ -1,6 +1,10 @@
 import os
 import requests
 import json
+from dotenv import load_dotenv
+
+# .env 파일 로드
+load_dotenv()
 
 # GitHub 설정
 GITHUB_TOKEN = os.getenv("PAT_TOKEN")
