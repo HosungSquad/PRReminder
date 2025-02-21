@@ -4,7 +4,9 @@ import json
 from dotenv import load_dotenv, find_dotenv
 
 # .env 파일 로드
-load_dotenv(find_dotenv())
+env_path = find_dotenv()
+print(f"🔍 .env 파일 경로: {env_path}")  # 경로 출력해서 확인
+load_dotenv(env_path)
 
 # GitHub 설정
 GITHUB_TOKEN = os.getenv("PAT_TOKEN")
@@ -79,8 +81,8 @@ def send_to_slack(message):
         print(f"Error: Slack 메시지 전송 실패 ({response.status_code})")
 
 def main():
-    print(f"GITHUB_TOKEN: {os.getenv('GITHUB_TOKEN', 'NOT SET')}")
-    print(f"SLACK_WEBHOOK_URL: {os.getenv('SLACK_WEBHOOK_URL', 'NOT SET')}")
+    print(f"🔍 로드된 GITHUB_TOKEN (첫 5자리): {GITHUB_TOKEN[:5]}...")
+    print(f"🔍 로드된 SLACK_WEBHOOK_URL (첫 10자리): {SLACK_WEBHOOK_URL[:10]}...")
     message = get_all_prs()
     send_to_slack(message)
 
