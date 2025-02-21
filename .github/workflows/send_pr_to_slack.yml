@@ -48,7 +48,4 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Run PR notification script
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: python github_pr_to_slack.py
+        run: GITHUB_TOKEN=${{ secrets.PAT_TOKEN }} SLACK_WEBHOOK_URL=${{ secrets.SLACK_WEBHOOK_URL }} python github_pr_to_slack.py
