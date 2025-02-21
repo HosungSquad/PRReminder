@@ -45,11 +45,11 @@ def format_pr_labels(pr):
         return f"[{', '.join(labels)}]"
     return ""
 
-def format_slack_message(prs):
+def format_slack_message(prs, repo):
     if not prs:
-        return "📌 PR Reminder!\nPR 로드 실패"
+        return ""
 
-    message = "📌 PR Reminder!\nReview 대기 중인 PR 목록:\n"
+    message = ""
     for pr in prs:
         labels_str = format_pr_labels(pr)
         repo_name = pr['base']['repo']['name']
@@ -64,12 +64,13 @@ def get_all_prs():
         response = get_prs_with_labels(repo["owner"], repo["name"])
         if response["status_code"] == 200:
             message = format_slack_message(response["prs"])
-            all_prs.append(message)
+            if len(message) != 0:
+                all_prs.append(message)
         else:
             message = "📌 PR Reminder!\nPR 로드 실패"
     
     if all_prs:
-        return "\n".join(all_prs)
+        return "📌 PR Reminder!\nReview 대기 중인 PR 목록:\n" + "\n".join(all_prs)
     else:
         return "📌 PR Reminder!\nReview를 기다리는 PR이 없습니다."
 
