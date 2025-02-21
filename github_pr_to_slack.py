@@ -5,6 +5,10 @@ import json
 # GitHub 설정
 GITHUB_TOKEN = os.getenv("PAT_TOKEN")
 SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL") 
+
+print(f"GITHUB_TOKEN: {os.getenv('GITHUB_TOKEN', 'NOT SET')}")
+print(f"SLACK_WEBHOOK_URL: {os.getenv('SLACK_WEBHOOK_URL', 'NOT SET')}")
+
 LABELS = ["OverDue", "D-0", "D-1", "D-2", "D-3"]
 REPOSITORIES = [
     {"owner": "jshan0120", "name": "CleCommonSystems"},
