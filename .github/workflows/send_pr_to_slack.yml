@@ -36,6 +36,17 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
+      - name: Debug Environment Variables
+        run: |
+          echo "Checking environment variables..."
+          echo "GITHUB_TOKEN length: ${#GITHUB_TOKEN}"
+          echo "PAT_TOKEN length: ${#PAT_TOKEN}"
+          echo "SLACK_WEBHOOK_URL length: ${#SLACK_WEBHOOK_URL}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
       - name: Run PR notification script
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
