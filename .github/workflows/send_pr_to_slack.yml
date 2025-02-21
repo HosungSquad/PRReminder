@@ -47,5 +47,10 @@ jobs:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+      - name: Create .env file
+        run: |
+          echo "GITHUB_TOKEN=${{ secrets.PAT_TOKEN }}" > .env
+          echo "SLACK_WEBHOOK_URL=${{ secrets.SLACK_WEBHOOK_URL }}" >> .env
+
       - name: Run PR notification script
-        run: GITHUB_TOKEN=${{ secrets.PAT_TOKEN }} SLACK_WEBHOOK_URL=${{ secrets.SLACK_WEBHOOK_URL }} python github_pr_to_slack.py
+        run: python github_pr_to_slack.py
