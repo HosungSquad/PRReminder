@@ -1,10 +1,10 @@
 import os
 import requests
 import json
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
 # .env 파일 로드
-load_dotenv()
+load_dotenv(find_dotenv())
 
 # GitHub 설정
 GITHUB_TOKEN = os.getenv("PAT_TOKEN")
@@ -18,11 +18,15 @@ REPOSITORIES = [
 
 def get_prs_with_labels(owner, repo):
     url = f"https://api.github.com/repos/{owner}/{repo}/pulls"
-    headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+    headers = {"Authorization": f"token {GITHUB_TOKEN}",
+               "Accept": "application/vnd.github.v3+json"}
     
     response = requests.get(url, headers=headers)
+    print(f"🔍 응답 코드: {response.status_code}")
+    print(f"🔍 응답 내용: {response.text}")
+
     if response.status_code != 200:
-        print(f"Error: GitHub API 요청 실패 ({response.status_code})")
+        print(f"❌ Error: GitHub API 요청 실패 ({response.status_code})")
         return []
 
     prs = response.json()
