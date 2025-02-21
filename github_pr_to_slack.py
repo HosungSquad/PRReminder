@@ -45,7 +45,7 @@ def format_pr_labels(pr):
         return f"[{', '.join(labels)}]"
     return ""
 
-def format_slack_message(prs, repo):
+def format_slack_message(prs):
     if not prs:
         return ""
 
