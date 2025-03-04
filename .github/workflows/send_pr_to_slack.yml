@@ -17,15 +17,15 @@ jobs:
           curl -s "https://calendar.naver.com/publicHoliday/ko.ics" -o holidays.ics
           TODAY=$(date +%Y%m%d)
           if grep -q "DTSTART;VALUE=DATE:$TODAY" holidays.ics; then
-            echo "is_holiday=true" >> $GITHUB_ENV
+            echo "is_holiday=true" >> $GITHUB_OUTPUT
           else
-            echo "is_holiday=false" >> $GITHUB_ENV
+            echo "is_holiday=false" >> $GITHUB_OUTPUT
           fi
           
   notify:
     runs-on: ubuntu-latest
     needs: check_holiday
-    if: needs.check_holiday.outputs.is_holiday == false
+    if: needs.check_holiday.outputs.is_holiday == 'false'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
