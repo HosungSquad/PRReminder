@@ -14,7 +14,8 @@ SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL")
 LABELS = ["OverDue", "D-0", "D-1", "D-2", "D-3"]
 REPOSITORIES = [
     {"owner": "jshan0120", "name": "CleCommonSystems"},
-    {"owner": "jshan0120", "name": "CleVisionSystems"}
+    {"owner": "jshan0120", "name": "CleVisionSystems"},
+    {"owner": "HosungLee-CLE", "name": "Mount3DEngine"}
 ]
 
 def get_prs_with_labels(owner, repo):
